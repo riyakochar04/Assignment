@@ -7,20 +7,16 @@ def detect_suspicious_activity(file_path, threshold=10):
     try:
         with open(file_path, 'r') as file:
             for line in file:
-                # Extract IP and status code
                 match = re.search(r'(\d+\.\d+\.\d+\.\d+).*" .*?" (\d+)', line)
                 if match:
                     ip = match.group(1)
                     status_code = match.group(2)
 
-                    # Increment failed login count for status code 401 or failure messages
                     if status_code == '401' or 'Invalid credentials' in line:
                         failed_logins[ip] += 1
 
-        # Filter IPs exceeding the threshold
         suspicious_ips = {ip: count for ip, count in failed_logins.items() if count > threshold}
 
-        # Display results
         if suspicious_ips:
             print("Suspicious Activity Detected:")
             print(f"{'IP Address':<20}{'Failed Login Attempts':<10}")
@@ -35,6 +31,5 @@ def detect_suspicious_activity(file_path, threshold=10):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-# Use the 'sample.log' file
 log_file_path = "sample.log"
 detect_suspicious_activity(log_file_path, threshold=10)
